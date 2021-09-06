@@ -23,7 +23,7 @@ let collection;
 let database;
 let info = {}
 
-app = express()
+const app = express()
 
 app.use(express.static(path.join(__dirname, "public")));
 app.set('view engine', 'ejs')
@@ -42,41 +42,38 @@ async function connect() {
 connect().catch(console.dir);
 
 app.get('/', async (req, res) => {
-    result = await collection.findOne({_id:"TotalRRCount"})
+    const result = await collection.findOne({_id:"TotalRRCount"})
 
     res.render("index" , {rrCount: result.value || "Error"});
 })
 
-app.get('/posts*', (req, res) => {
+app.get('/posts/:url', (req, res) => {
     handleRR(req , res);
 })
 
-app.get('/news*', (req, res) => {
+app.get('/news/:url', (req, res) => {
     handleRR(req , res);
 })
 
-app.get('/blogs*', (req, res) => {
+app.get('/blogs/:url', (req, res) => {
     handleRR(req , res);
 })
 
 app.get('/data', async (req , res) => {
     const params = req.query
-    console.log(req.query)
-    result = await collection.findOne({_id:encodeURI(params.url)})
-    console.log(result)
+    const result = await collection.findOne({_id:encodeURI(params.url)})
 
     res.render('stats', {noClicks: result ? result.value : 0 , title: params.url})
 })
 
 app.post('/gen/rr', bodyParser, (req, res) => {
-    console.log("Got a request for creating RR!")
     const params = req.body
     
     if (!params.url || !params.title){
         res.status(400).send({error: "bad request"})
     }
 
-    info.url = {title: params.title , description: params.description , ImgUrl: params.ImgUrl}
+    info[url] = {title: params.title , description: params.description , ImgUrl: params.ImgUrl}
     console.log(info)
     //keep title and descp in an array in {} then use when needed
 })
@@ -90,8 +87,7 @@ async function create(url , title , descp , ImgUrl , result){
 }
 
 async function handleRR(req , res){
-    url = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log(`protocol = ${url}`);
+    const url = req.params.url;
     const value = {
         $inc: {
           value: 1
@@ -99,7 +95,7 @@ async function handleRR(req , res){
       };
     await collection.updateOne({_id:"TotalRRCount"} , value)
 
-    result = await collection.findOne({_id:url})
+    const result = await collection.findOne({_id: url})
 
     if (result){
         const title = result.title //maybe here
@@ -115,11 +111,10 @@ async function handleRR(req , res){
             const ImgUrl = ""
         }
     } else {
-        console.log(`url = ${info.url}`)
-        const title = info.url.title
-        const descp = info.url.description || ""
-        const ImgUrl = info.url.ImgUrl || ""
-        create(url , title , descp , ImgUrl, result)
+        const title = info[url].title
+        const descp = info[url].description || ""
+        const ImgUrl = info[url].ImgUrl || ""
+        create(url, title, descp, ImgUrl, result)
         
         //todo - pop url key from info 
     }
@@ -128,10 +123,7 @@ async function handleRR(req , res){
     await collection.updateOne({_id:url} , value)
 
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    console.log(`lmfao got a person at ${ip}`)
-
-    console.log(`Got request throwing the following - ${title},\n descp= ${descp}`)
-    console.log(`Got request title - ${typeof title},\n descp= ${typeof descp}`)
+    console.log(`lmfao ez rickroll got a person at ${ip}`)
     res.render('rickroll', {title, description: descp , ImgUrl});
 }
 
