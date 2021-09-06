@@ -127,7 +127,7 @@ async function handleRR(req , res){
     await collection.updateOne({_id:url} , value)
 
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    console.log(`lmfao ez rickroll got a person at ${ip}`)
+    console.log(`lmfao got a person at ${ip}`)
     res.render('rickroll', {title, description: descp , ImgUrl});
 }
 
