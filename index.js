@@ -73,7 +73,7 @@ app.post('/gen/rr', bodyParser, (req, res) => {
         res.status(400).send({error: "bad request"})
     }
 
-    info[url] = {title: params.title , description: params.description , ImgUrl: params.ImgUrl}
+    info[params.url] = {title: params.title , description: params.description , ImgUrl: params.ImgUrl}
     console.log(info)
     //keep title and descp in an array in {} then use when needed
 })
@@ -96,7 +96,9 @@ async function handleRR(req , res){
     await collection.updateOne({_id:"TotalRRCount"} , value)
 
     const result = await collection.findOne({_id: url})
-
+    let title;
+    let descp;
+    let ImgUrl;
     if (result){
         const title = result.title //maybe here
         if (result.description){
@@ -111,11 +113,13 @@ async function handleRR(req , res){
             const ImgUrl = ""
         }
     } else {
-        const title = info[url].title
-        const descp = info[url].description || ""
-        const ImgUrl = info[url].ImgUrl || ""
+        if (!info[url]) {
+            
+        }
+        title = info[url].title
+        descp = info[url].description || ""
+        ImgUrl = info[url].ImgUrl || ""
         create(url, title, descp, ImgUrl, result)
-        
         //todo - pop url key from info 
     }
 
