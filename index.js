@@ -95,22 +95,25 @@ async function handleRR(req , res){
       };
     await collection.updateOne({_id:"TotalRRCount"} , value)
 
-    const result = await collection.findOne({_id: url})
-    let title;
+  
+    result = await collection.findOne({_id:url})
     let descp;
     let ImgUrl;
+    let title;
+
     if (result){
-        const title = result.title //maybe here
+
+        title = result.title //maybe here
         if (result.description){
-            const descp = result.description
+            descp = result.description
         } else {
-            const descp = ""
+            descp = ""
         }
 
         if (result.ImgUrl){
-            const ImgUrl = result.ImgUrl
+            ImgUrl = result.ImgUrl
         } else {
-            const ImgUrl = ""
+            ImgUrl = ""
         }
     } else {
         if (!info[url]) {
@@ -120,6 +123,7 @@ async function handleRR(req , res){
         descp = info[url].description || ""
         ImgUrl = info[url].ImgUrl || ""
         create(url, title, descp, ImgUrl, result)
+
         //todo - pop url key from info 
     }
 
