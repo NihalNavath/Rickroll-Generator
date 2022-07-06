@@ -118,7 +118,7 @@ async function handleRR(req , res){
     let ImgUrl;
     let title;
     
-    if(!result && info[url]){
+    if(!result && !info[url]){
         return res.send("Not a valid rick roll link, create one at https://news.rr.nihalnavath.com/");
     }
     
