@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/faq.css">
+    <title>Rickroll generator faq</title>
+</head>
+
+<body>
+
+</body>
+<div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <h3>Top rick roll generator queries</h3>
+
+    <div class="faq">
+        <div class="faq-container">
+            <button id="1">What is "rickrolling"?</button>
+            <p>Rickrolling is an internet meme where someone tricks another person into clicking on a link that leads to
+                the music video of Rick Astley's 1987 hit song "Never Gonna Give You Up". The prank is often played as a
+                joke and has become a popular online phenomenon.</p>
+        </div>
+
+        <div class="faq-container">
+            <button id="2">What is "rickrolling"?</button>
+            <p>To create a custom Rick Roll link, head to <a
+                    href="https://news.rr.nihalnavath.com">https://news.rr.nihalnavath.com</a>. Fill the required
+                information and then click on "generate". Be creative with the link name to
+                entice people to click on it!</p>
+        </div>
+
+        <h2>Site related faq</h2>
+
+        <div class="faq-container">
+            <button id="3">What does the expiry option do?</button>
+            <p> The expiry option on a custom Rick Roll link allows you to set a specific date and time for when the
+                link will
+                no longer work. This is useful if you only want the link to be active for a limited time, such as for a
+                prank or
+                a promotional campaign. Once the expiry time is reached, anyone who clicks on the link will no longer be
+                directed to the Rick Astley music video, and the link will appear as broken.</p>
+        </div>
+
+        <div class="faq-container">
+            <button id="4">What does the types do?</button>
+            <p> The types are simply provided to convince the victims even more when reading the url and helps you
+                match the topic, it doesn't have any special effect.</p>
+        </div>
+
+        <div class="faq-container">
+            <button id="5">Why are images not working for me?</button>
+            <p> Make sure that the image is hosted and properly fetchable when coping image link from the internet make
+                sure you click on
+                "copy image link". The "image previewer" should help you
+                determine if the image preview is working.</p>
+        </div>
+
+        <div class="faq-container">
+            <button id="6">How do I set the link to delete itself after x days?</button>
+            <p> To set a lifespan on the generated links, use the "expiry" option and choose the preferred lifespan.</p>
+        </div>
+
+        <div class="faq-container">
+            <button id="7">How do I provide suggestions or report bugs?</button>
+            <p> You can contact the developer via discord or the contact page both which are given on the bottom of the
+                main page.</p>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("click", (ev) => {
+        if (!(ev.target instanceof HTMLButtonElement)) {
+            return;
+        }
+        show(ev.target.id);
+    });
+
+    const show = (id) => {
+        console.log("Show called", id);
+        const answer = document.getElementById(id).nextElementSibling;
+        answer.style.display = answer.style.display === "block" ? "none" : "block"
+    };
+</script>
+
+</html>

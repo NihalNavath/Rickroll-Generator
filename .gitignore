@@ -1,0 +1,14 @@
+#ENV
+*.env
+
+#NODE_MODULES
+/node_modules
+
+#vs code
+.vscode
+
+#Compiled version
+/built
+
+#search consoles
+/public/google58446a02114ddbe4.html

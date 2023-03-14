@@ -1,0 +1,39 @@
+footer {
+  justify-content: space-around;
+}
+
+.huge {
+  font-size: 30px;
+}
+
+.copied_alert{
+    position: fixed;
+    bottom: -100px;
+    left: 0;
+    width: 100%;
+    transition: bottom 200ms ease-in-out;
+    border-radius: 6px 6px 0 0;
+    z-index: 2;
+
+    color: #084298;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+    font-size: 3rem;
+}
+
+.url-copy-input {
+  font-size: 1.3rem;
+  background-color: #212529;
+  color: white;
+  padding: 1rem;
+  width: 80%;
+  text-align: center;
+  border-radius: 10px;
+  border: 1rem solid blue;
+}
+
+.url-copy-input:focus { 
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 100px #9ecaed;
+}

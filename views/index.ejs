@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="../img/rr.gif" type="image/gif">
+
+    <!-- HTML Meta Tags -->
+    <title>Rick Roll link generator - Nihal Navath</title>
+    <meta name="description" content="Create your own custom rick rolls with title, description and image!">
+    <meta name="keywords"
+        content="rick roll link generator, rickroll link generator, rickroll generator, custom rick roll link, rick roll link maker, rick roll with different link generator">
+
+    <!-- Google / Search Engine Tags -->
+    <meta itemprop="name" content="Rickroll generator - Nihal Navath">
+    <meta itemprop="description"
+        content="rick roll link generator, create your own custom rick rolls with title, description and image!">
+    <meta itemprop="image" content="">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://news.rr.nihalnavath.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Rickroll generator - Nihal Navath">
+    <meta property="og:description" content="Create your own custom rick rolls with title, description and image!">
+    <meta property="og:image" content="">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rickroll generator - Nihal Navath">
+    <meta name="twitter:description" content="Create your own custom rick rolls with title, description and image!">
+    <meta name="twitter:image" content="">
+
+    <link rel="stylesheet" href="https://nihalnavath.com/global.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="text-center">
+            <h1>Create your own custom Rick Roll links!</h1>
+            <p class="text-muted">Made with ❤️ by<a href="https://nihalnavath.com" target="_blank">Nihal Navath</a> | <a
+                    href="/faq">FAQ</a></p>
+            </p>
+            <p>Need help? <a href="https://discord.gg/3EP6bMK3YA">join our discord!</a></p>
+            <div class="creation-cont text-center flex-vertical">
+                <div id="server-preview-error" style="display: none" class="container-preview-error">
+
+                </div>
+
+                <form id="form" style="width: 100%;" onsubmit="event.preventDefault();">
+                    <input id="title" type="text" placeholder="give a title for your page! REQUIRED" maxlength="130"
+                        style="width: 80%;margin-bottom: 10px;max-width: 40em;" required="" autocomplete="off">
+                    <div class="container-dpd">
+                        <textarea id="description" type="text" placeholder="Description (optional, but recommended)"
+                            maxlength="155" style="min-height: 5em; max-width: 35em; max-height: 20em;"></textarea>
+                        <div>
+                            <img src="/img/preview.png" id="img-preview" class="img-preview" alt="preview">
+                        </div>
+                    </div>
+                    <div id="container-preview-error" class="container-preview-error">
+                        <p id="img-preview-error"></p>
+                    </div>
+                    <input id="ImgUrl" type="url"
+                        placeholder="Image URL, make sure it ends with a valid image type, ie: .png/.jpeg etc (optional)"
+                        maxlength="500" autocomplete="off">
+                    <div id="drop-drown-menu">
+                        <div>
+                            <p>Type:</p>
+                            <select name="type" id="type" class="drop-down">
+                                <option value="posts">posts</option>
+                                <option value="blogs">blogs</option>
+                                <option value="news">news</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <p>Expiry:</p>
+                            <select name="expiry" id="expiry" class="drop-down">
+                                <option value="1">1 day</option>
+                                <option value="5">5 days</option>
+                                <option value="10">10 days</option>
+                                <option value="30">1 month</option>
+                                <option value="never">Never</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="gen-btn" onclick="generateRickroll()" form="form">Generate Link!</button>
+                </form>
+            </div>
+
+            <p class="text-muted">Tip: you can end your URL with file extensions! example mytitle.txt, article.md...
+                happy rickrolling!</p>
+
+        </div>
+    </div>
+
+    <div class="bottom">
+        <!-- <p>website doesn't use no third party shit</p> -->
+        <p>loved my rr gen? share your experience! </p>
+        <a target="_blank" class="social social-blue" id="twitter" title="Twitter"
+            href="https://twitter.com/intent/tweet?text=https://news.rr.nihalnavath.com/ by @NihalNavath">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#fff" class="bi bi-twitter"
+                viewBox="0 0 16 16">
+                <path
+                    d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z">
+                </path>
+            </svg>
+        </a>
+        <a target="_blank" class="social social-blue" id="facebook" title="Facebook"
+            href="https://www.facebook.com/sharer/sharer.php?u=https://news.rr.nihalnavath.com/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#fff" class="bi bi-facebook"
+                viewBox="0 0 16 16">
+                <path
+                    d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z">
+                </path>
+            </svg>
+        </a>
+        <a target="_blank" class="social social-blue" id="email" title="Email"
+            href="mailto:?body=https://news.rr.nihalnavath.com/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#fff" class="bi bi-envelope-fill"
+                viewBox="0 0 16 16">
+                <path
+                    d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z">
+                </path>
+            </svg>
+        </a>
+        <a target="_blank" class="social social-green" id="whatsapp" title="wWhatsApp"
+            href="https://api.whatsapp.com/send?text=https://news.rr.nihalnavath.com/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#fff" class="bi bi-whatsapp"
+                viewBox="0 0 16 16">
+                <path
+                    d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z">
+                </path>
+            </svg>
+        </a>
+        <a target="_blank" class="social social-orange" id="reddit" title="Reddit"
+            href="https://www.reddit.com/submit?text=https://news.rr.nihalnavath.com/">
+            <svg width="25" height="25" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 186.5 188.99">
+                <path
+                    d="M95.38,174.51c-24.13-.73-47-5.88-66-22.2-11-9.45-18-21.09-17-36.25.24-3.34-1.74-4.86-3.55-6.84C1.64,101.35.74,90,6.59,82c6.51-9,17.73-12.14,27.63-7,3.59,1.86,6.14,1.71,9.46-.1C56.91,67.61,71,63.34,86.16,63c4.78-.12,7.41-1.67,8.73-6.78,2.54-9.8,6.21-19.31,9-29,1.6-5.51,3.93-7.86,10.11-5.93,7.53,2.36,15.43,3.54,23.09,5.55,3.21.84,5.18.55,7.6-2.23,6.6-7.57,14.74-9,22.6-4.64a18,18,0,0,1,9,20.17c-1.62,7.4-8.63,13.38-16.39,14-8.15.64-15.88-4.36-18.45-13.14-1.14-3.91-3.32-5-6.52-5.65l-8-1.76c-14.63-3.28-14.71-3.31-19.18,11.48-1.64,5.4-6.18,11.5-4,16.07s9.88,2,15.08,3.28c10.15,2.52,20.07,5.4,29.13,10.7,3.28,1.92,5.83,1.94,9.4,0,10.06-5.52,21.53-2.31,28.12,7.16A21.46,21.46,0,0,1,182.42,110c-2.06,2-3.52,3.66-3.46,6.81.28,15-6.62,26.67-17.76,36C142.23,168.69,119.59,173.83,95.38,174.51Zm.77-19.58c10,.42,19.45-1.49,27.76-7.76,2.71-2,5.54-4,2.77-7.73-2.41-3.21-5-1.47-7.76.14-15.35,9.06-30.78,9.1-46.12-.06-2.68-1.6-5.38-3.36-7.71,0-2.58,3.72.22,5.67,3,7.72C76.39,153.47,85.87,155.34,96.15,154.93Zm40.2-46.74a12.15,12.15,0,0,0-12.57-12.53,12.65,12.65,0,0,0-12.71,12.64c0,6.73,6.12,12.8,12.83,12.75A12.58,12.58,0,0,0,136.35,108.19ZM67.79,95.69a12.41,12.41,0,0,0-12.25,13.07A13,13,0,0,0,68,121.05c6.7.06,12.85-6.14,12.77-12.88A12.78,12.78,0,0,0,67.79,95.69Z"
+                    transform="translate(-2.75 -9.39)" style="fill:#ffffff"></path>
+            </svg>
+        </a>
+        <h2> <b>
+                <%= rrCount %> victims rickrolled!
+            </b> </h2>
+        <p>Made with ❤️ by<a href="https://nihalnavath.com" target="_blank">Nihal Navath</a></p>
+        <p>This project is <a href="https://github.com/NihalNavath/Rickroll-link-Generator" target="_blank">open
+                sourced!</a></p>
+        <p>I LOVE listening to your feedback, please write something at<a href="https://nihalnavath.com/contact"
+                target="_blank">my contact page</a></p>
+    </div>
+
+    <script src="scripts/bundle.min.js"></script>
+</body>
+
+</html>

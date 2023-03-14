@@ -1,0 +1,30 @@
+button {
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    padding: 1.5rem 1.25rem;
+}
+
+button::before {
+    content: ">> ";
+}
+
+.faq p {
+    display: none;
+}
+
+h1 {}
+
+.container {
+    text-align: center;
+}
+
+.faq-container {
+    border: black 1px solid;
+}
+
+.faq p {
+    font-size: 1.2rem;
+}

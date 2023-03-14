@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://nihalnavath.com/global.css">
+    <link rel="stylesheet" href="../css/stats.css">
+
+    <meta http-equiv="refresh" content="20">
+
+    <title>
+        <%= noClicks %> | Stats for id - <%= title %> | Nihal Navath
+    </title>
+</head>
+
+<body class="text-center">
+    <h1>Link</h1>
+    <p>Share this bait with others!</p>
+    <p><b>Click on link to copy</b></p>
+    <input readonly="" type="text" id="url-copy-input" class="url-copy-input" style="border: 0" value="<%= link %>"
+        onclick="copyToClipboard(this)">
+
+    <h1>Stats</h1>
+
+    <p class="huge">Your link has been used: <b>
+            <%= noClicks %>
+        </b> time(s)!</p>
+
+    <p>Your link:<br>
+        <%= link %>
+    </p>
+
+    <p class="text-muted">Info: Data should auto update with max delay of 20 seconds.</p>
+
+    <div id="copied_alert" class="copied_alert">
+        Copied to clipboard :)
+    </div>
+
+    <footer style="display: flex;" class="flex-vertical flex-responsive center">
+        <p><a href="https://nihalnavath.com">Made by Nihal Navath</a></p>
+        <p><a href="https://news.rr.nihalnavath.com">Back to main site</a> </p>
+    </footer>
+</body>
+<script>
+    function copyToClipboard(e) {
+        e.select();
+        document.execCommand("copy");
+
+        document.getElementById('copied_alert').setAttribute('style', "bottom: 0");
+        timeout = setTimeout(function () {
+            document.getElementById('copied_alert').setAttribute('style', "");
+            document.getElementById('url-copy-input').blur();
+        }, 3000);
+    }
+</script>
+
+</html>
