@@ -12,6 +12,9 @@ const PROXYLEVEL = 1;
 
 const app = express();
 app.set("trust proxy", PROXYLEVEL);
+app.use(express.static(path.join(__dirname, "../public")));
+app.set("views", path.join(__dirname, "../views"));
+app.set("view engine", "ejs");
 
 import { api } from "./routers/api";
 app.use("/api", api);
@@ -78,11 +81,8 @@ const rateLimiterMiddleware = (req: Request, res: Response, next: NextFunction) 
             res.status(429).render("ratelimited", { retryAfter, rateLimit, rateLimitRemainingPoints, rateLimitReset });
         });
 };
-
 app.use(rateLimiterMiddleware);
-app.use(express.static(path.join(__dirname, "../public")));
-app.set("views", path.join(__dirname, "../views"));
-app.set("view engine", "ejs");
+
 
 app.get("/", async (req: Request, res: Response) => {
     const result = await collection.findOne({ _id: "TotalRRCount" }); //cache count maybe?
