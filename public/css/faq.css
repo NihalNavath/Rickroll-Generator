@@ -1,3 +1,7 @@
+body, html{
+  font-family: "Montserrat", sans-serif;
+}
+
 button {
     font-weight: 600;
     font-size: 1rem;
