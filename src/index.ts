@@ -37,13 +37,13 @@ const setup = async () => {
 
     if (!URL) throw new Error("Env file not configured properly. 'mongourl' not found.");
 
-    // mongoClient = new mongoDB.MongoClient(URL);
+    mongoClient = new mongoDB.MongoClient(URL);
 
-    // await mongoClient.connect();
-    // await mongoClient.db("main").command({ ping: 1 });
+    await mongoClient.connect();
+    await mongoClient.db("main").command({ ping: 1 });
 
-    // const database = mongoClient.db("main");
-    // collection = database.collection("rickroll");
+    const database = mongoClient.db("main");
+    collection = database.collection("rickroll");
 
     console.log("Connected successfully to db and fetched main collection.");
 
@@ -85,9 +85,7 @@ app.use(rateLimiterMiddleware);
 
 
 app.get("/", async (req: Request, res: Response) => {
-    // const result = await collection.findOne({ _id: "TotalRRCount" }); //cache count maybe?
-
-    const result = {value: 10000}
+    const result = await collection.findOne({ _id: "TotalRRCount" }); //cache count maybe?
 
     if (!result) {
         throw new Error("Could not find total rickroll count, is the database not configured? run `npm run setup-db`");
