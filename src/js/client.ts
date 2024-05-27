@@ -6,6 +6,7 @@ const generateRickroll = async () => {
     const desc = (<HTMLInputElement>document.getElementById("description")).value;
     const title = (<HTMLInputElement>document.getElementById("title")).value;
     const ImgUrlValue = (<HTMLInputElement>document.getElementById("ImgUrl")).value;
+    const author = (<HTMLInputElement>document.getElementById("author")).value;
     const type = (<HTMLInputElement>document.getElementById("type")).value;
     const expiry = (<HTMLInputElement>document.getElementById("expiry")).value;
 
@@ -21,6 +22,7 @@ const generateRickroll = async () => {
             title: title,
             description: desc,
             type: type,
+            author: author,
             expiry: expiry,
             ImgUrl: ImgUrlValue
         }),
@@ -44,7 +46,7 @@ const generateRickroll = async () => {
     document.location = dataLink;
 };
 
-function previewImg(url) {
+function previewImg (url) {
     if (url.indexOf("http://") != 0 && url.indexOf("https://") != 0) {
         imagePreviewError("The url needs to start with https:// or http://");
     }

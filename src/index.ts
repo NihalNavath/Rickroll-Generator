@@ -1,7 +1,8 @@
 import * as mongoDB from "mongodb";
 import * as path from "path";
 import express, {
-    Request, Response, NextFunction
+    Request, Response, NextFunction,
+    text
 } from "express";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { config } from "dotenv";
@@ -61,7 +62,6 @@ const globalRatelimiter = new RateLimiterMemory({
 
 const rateLimiterMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip;
-    console.log(ip);
 
     globalRatelimiter.consume(ip)
         .then(() => {
@@ -116,9 +116,9 @@ app.get("/data", async (req: Request<unknown, unknown, unknown, args>, res: Resp
 
     let result = await fetchFromDb(query.url);
 
-    if (!result){
+    if (!result) {
         //data not in db, try cache
-        result = info[query.url]
+        result = info[query.url];
     }
 
     const type = result ? result.type : "posts";
@@ -131,15 +131,15 @@ app.get("/data", async (req: Request<unknown, unknown, unknown, args>, res: Resp
     res.render("stats", { noClicks: result ? result.value : 0, title: encodeURI(query.url), link });
 });
 
-const create = (url: string, title: string, description: string, type: string, expiry: string | number, imgUrl: string) => {
+const create = (url: string, title: string, description: string, type: string, author: string, expiry: string | number, imgUrl: string) => {
     const cDateTime = new Date();
     expiry = Number(expiry);
     if (expiry) {
         const expireAt = cDateTime.setDate(cDateTime.getDate() + expiry);
-        collection.insertOne({ "link": url, value: 0, title, type, expiry, description, imgUrl, createDate: cDateTime, expireAt: expireAt });
+        collection.insertOne({ "link": url, value: 0, title, type, expiry, description, imgUrl, author, createDate: cDateTime, expireAt: expireAt });
     }
     else {
-        collection.insertOne({ "link": url, value: 0, title, type, expiry, description, imgUrl, createDate: cDateTime });
+        collection.insertOne({ "link": url, value: 0, title, type, expiry, description, imgUrl, author, createDate: cDateTime });
     }
 
     console.log(`created index for url ${url}!`);
@@ -169,19 +169,23 @@ const handleRR = async (req: Request, res: Response) => {
     let expiry: string;
     let ImgUrl: string;
     let title: string;
+    let author: string;
+    let text: string;
 
     if (result) {
         title = result.title;
         description = result.description;
+        author = result.author;
         type = result.type;
         ImgUrl = result.ImgUrl;
     } else {
         title = info[url].title;
         description = info[url].description;
         type = info[url].type;
+        author = info[url].author;
         expiry = info[url].expiry;
         ImgUrl = info[url].ImgUrl;
-        create(url, title, description, type, expiry, ImgUrl);
+        create(url, title, description, type, author, expiry, ImgUrl);
 
         delete info[url];
     }
@@ -190,12 +194,18 @@ const handleRR = async (req: Request, res: Response) => {
     await collection.updateOne({ _id: "TotalRRCount" }, incValue);
     await collection.updateOne({ "link": url }, incValue);
 
-    res.render("rickroll", { title, description, ImgUrl });
+    if (typeof author !== "undefined" && author.length !== 0) {
+        text = `${author} rickrolled you! haha`;
+    } else {
+        text = "Get rickrolled! haha";
+    }
+
+    res.render("_rickroll", { title, description, ImgUrl, text });
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateCache = (url: string, params: any) => {
-    info[url] = { title: params.title, description: params.description, value: 0, type: params.type, expiry: params.expiry, ImgUrl: params.ImgUrl, createTime: params.cDateTime };
+    info[url] = { title: params.title, description: params.description, value: 0, type: params.type, expiry: params.expiry, ImgUrl: params.ImgUrl, createTime: params.cDateTime, author: params.author };
 };
 
 const serve = async () => {
