@@ -67,7 +67,7 @@
                     <input id="ImgUrl" type="url"
                         placeholder="Image URL, make sure it ends with a valid image type, ie: .png/.jpeg etc (optional)"
                         maxlength="500" autocomplete="off">
-                    <div id="drop-drown-menu">
+                    <div id="drop-down-menu">
                         <div>
                             <p>Type:</p>
                             <select name="type" id="type" class="drop-down">
@@ -75,6 +75,11 @@
                                 <option value="blogs">blogs</option>
                                 <option value="news">news</option>
                             </select>
+                        </div>
+
+                        <div>
+                            <p>Your name: (will be shown to <br> victim when rickrolled)</p>
+                            <input id="author" type="text" placeholder="author name" maxlength="500" autocomplete="off">
                         </div>
 
                         <div>
@@ -86,11 +91,6 @@
                                 <option value="30">1 month</option>
                                 <option value="never">Never</option>
                             </select>
-                        </div>
-
-                        <div>
-                            <p>Your name: (will be shown to <br> victim when rickrolled)</p>
-                            <input id="author" type="text" placeholder="author name" maxlength="500" autocomplete="off">
                         </div>
                     </div>
                     <button class="gen-btn" onclick="generateRickroll()" form="form">Generate Link!</button>

@@ -123,10 +123,10 @@ app.get("/data", async (req: Request<unknown, unknown, unknown, args>, res: Resp
 
     const type = result ? result.type : "posts";
 
+    const protocol = req.secure ? "https" : "http";
     const proxyHost = req.headers["x-forwarded-host"];
     const host = proxyHost ? proxyHost : req.headers.host;
-    const link = `${req.protocol}://${host}/${type}/${query.url}`;
-
+    const link = `${protocol}://${host}/${type}/${query.url}`;
 
     res.render("stats", { noClicks: result ? result.value : 0, title: encodeURI(query.url), link });
 });

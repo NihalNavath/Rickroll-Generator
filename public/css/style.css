@@ -39,6 +39,11 @@ p.img-preview-error {
   display: flex;
 }
 
+div#drop-down-menu {
+  display: flex;
+  justify-content: space-around;
+}
+
 .img-preview {
   border-radius: 1.25rem;
   height: 8rem;
@@ -169,12 +174,12 @@ button.gen-btn {
 }
 
 /* FAQ section */
-.faq-container{
+.faq-container {
   color: white;
   padding-bottom: 10px;
 }
 
-.heading{
+.heading {
   font-size: 32px;
 }
 
@@ -210,6 +215,11 @@ button.gen-btn {
     height: 2rem;
   }
 
+  #drop-down-menu {
+    display: flex;
+    flex-direction: column;
+  }
+
 }
 
 @media only screen and (max-width: 1000px) {
@@ -220,9 +230,4 @@ button.gen-btn {
   .yes-mob {
     display: block;
   }
-}
-
-div#drop-drown-menu {
-  display: flex;
-  justify-content: space-around;
 }
