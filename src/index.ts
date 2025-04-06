@@ -18,6 +18,7 @@ app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "ejs");
 
 import { api } from "./routers/api";
+import { isbot } from "isbot";
 app.use("/api", api);
 
 const topLevelRickrollPaths = ["/posts/:url", "/news/:url", "/blogs/:url"];
@@ -190,9 +191,11 @@ const handleRR = async (req: Request, res: Response) => {
         delete info[url];
     }
 
-    //increment count
-    await collection.updateOne({ _id: "TotalRRCount" }, incValue);
-    await collection.updateOne({ "link": url }, incValue);
+    //increment count if not a bot
+	if (!isbot(req.headers["user-agent"])) {
+		await collection.updateOne({ _id: "TotalRRCount" }, incValue);
+		await collection.updateOne({ link: url }, incValue);
+	}
 
     if (typeof author !== "undefined" && author.length !== 0) {
         text = `${author} rickrolled you! haha`;
