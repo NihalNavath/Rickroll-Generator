@@ -1,9 +1,6 @@
 import * as mongoDB from "mongodb";
 import * as path from "path";
-import express, {
-    Request, Response, NextFunction,
-    text
-} from "express";
+import express, { Request, Response, NextFunction, text } from "express";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { config } from "dotenv";
 config();
@@ -18,13 +15,14 @@ app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "ejs");
 
 import { api } from "./routers/api";
+import { isbot } from "isbot";
 app.use("/api", api);
 
 const topLevelRickrollPaths = ["/posts/:url", "/news/:url", "/blogs/:url"];
 const incValue = {
-    $inc: {
-        value: 1
-    },
+	$inc: {
+		value: 1,
+	},
 };
 
 let PORT: number | string;
@@ -33,187 +31,249 @@ let collection: mongoDB.Collection;
 export const info = {};
 
 const setup = async () => {
-    const URL = process.env.mongourl;
-    PORT = process.env.port || 3000;
+	const URL = process.env.mongourl;
+	PORT = process.env.port || 3000;
 
-    if (!URL) throw new Error("Env file not configured properly. 'mongourl' not found.");
+	if (!URL)
+		throw new Error(
+			"Env file not configured properly. 'mongourl' not found."
+		);
 
-    mongoClient = new mongoDB.MongoClient(URL);
+	mongoClient = new mongoDB.MongoClient(URL);
 
-    await mongoClient.connect();
-    await mongoClient.db("main").command({ ping: 1 });
+	await mongoClient.connect();
+	await mongoClient.db("main").command({ ping: 1 });
 
-    const database = mongoClient.db("main");
-    collection = database.collection("rickroll");
+	const database = mongoClient.db("main");
+	collection = database.collection("rickroll");
 
-    console.log("Connected successfully to db and fetched main collection.");
+	console.log("Connected successfully to db and fetched main collection.");
 
-    if (collection) {
-        return "Success";
-    } else {
-        return "Failed";
-    }
+	if (collection) {
+		return "Success";
+	} else {
+		return "Failed";
+	}
 };
 
 const globalRatelimiter = new RateLimiterMemory({
-    points: 100,
-    duration: 1,
+	points: 100,
+	duration: 1,
 });
 
-const rateLimiterMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const ip = req.ip;
+const rateLimiterMiddleware = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ip = req.ip;
 
-    globalRatelimiter.consume(ip)
-        .then(() => {
-            next();
-        })
-        .catch((rateLimiterRes) => {
-            const retryAfter = rateLimiterRes.msBeforeNext / 1000;
-            const rateLimit = 3;
-            const rateLimitRemainingPoints = rateLimiterRes.remainingPoints;
-            const rateLimitReset = new Date(Date.now() + rateLimiterRes.msBeforeNext);
-            res.set({
-                "Retry-After": retryAfter,
-                "X-RateLimit-Limit": rateLimit,
-                "X-RateLimit-Remaining": rateLimitRemainingPoints,
-                "X-RateLimit-Reset": rateLimitReset
-            });
-            res.status(429).render("ratelimited", { retryAfter, rateLimit, rateLimitRemainingPoints, rateLimitReset });
-        });
+	globalRatelimiter
+		.consume(ip)
+		.then(() => {
+			next();
+		})
+		.catch((rateLimiterRes) => {
+			const retryAfter = rateLimiterRes.msBeforeNext / 1000;
+			const rateLimit = 3;
+			const rateLimitRemainingPoints = rateLimiterRes.remainingPoints;
+			const rateLimitReset = new Date(
+				Date.now() + rateLimiterRes.msBeforeNext
+			);
+			res.set({
+				"Retry-After": retryAfter,
+				"X-RateLimit-Limit": rateLimit,
+				"X-RateLimit-Remaining": rateLimitRemainingPoints,
+				"X-RateLimit-Reset": rateLimitReset,
+			});
+			res.status(429).render("ratelimited", {
+				retryAfter,
+				rateLimit,
+				rateLimitRemainingPoints,
+				rateLimitReset,
+			});
+		});
 };
 app.use(rateLimiterMiddleware);
 
-
 app.get("/", async (req: Request, res: Response) => {
-    const result = await collection.findOne({ _id: "TotalRRCount" }); //cache count maybe?
+	const result = await collection.findOne({ _id: "TotalRRCount" }); //cache count maybe?
 
-    if (!result) {
-        throw new Error("Could not find total rickroll count, is the database not configured? run `npm run setup-db`");
-    }
+	if (!result) {
+		throw new Error(
+			"Could not find total rickroll count, is the database not configured? run `npm run setup-db`"
+		);
+	}
 
-    res.render("index", { rrCount: result.value });
+	res.render("index", { rrCount: result.value });
 });
 
 app.get("/faq", (req: Request, res: Response) => {
-    res.render("faq");
+	res.render("faq");
 });
 
 app.get("/usage", (req: Request, res: Response) => {
-    res.render("usage");
+	res.render("usage");
 });
 
 app.get(topLevelRickrollPaths, (req: Request, res: Response) => {
-    handleRR(req, res);
+	handleRR(req, res);
 });
 
 interface args {
-    url: string
+	url: string;
 }
 
-app.get("/data", async (req: Request<unknown, unknown, unknown, args>, res: Response) => {
-    const { query } = req;
-    if (!query.url) return res.redirect("/");
+app.get(
+	"/data",
+	async (req: Request<unknown, unknown, unknown, args>, res: Response) => {
+		const { query } = req;
+		if (!query.url) return res.redirect("/");
 
-    let result = await fetchFromDb(query.url);
+		let result = await fetchFromDb(query.url);
 
-    if (!result) {
-        //data not in db, try cache
-        result = info[query.url];
-    }
+		if (!result) {
+			//data not in db, try cache
+			result = info[query.url];
+		}
 
-    const type = result ? result.type : "posts";
+		const type = result ? result.type : "posts";
 
-    const protocol = req.secure ? "https" : "http";
-    const proxyHost = req.headers["x-forwarded-host"];
-    const host = proxyHost ? proxyHost : req.headers.host;
-    const link = `${protocol}://${host}/${type}/${query.url}`;
+		const protocol = req.secure ? "https" : "http";
+		const proxyHost = req.headers["x-forwarded-host"];
+		const host = proxyHost ? proxyHost : req.headers.host;
+		const link = `${protocol}://${host}/${type}/${query.url}`;
 
-    res.render("stats", { noClicks: result ? result.value : 0, title: encodeURI(query.url), link });
-});
+		res.render("stats", {
+			noClicks: result ? result.value : 0,
+			title: encodeURI(query.url),
+			link,
+		});
+	}
+);
 
-const create = (url: string, title: string, description: string, type: string, author: string, expiry: string | number, imgUrl: string) => {
-    const cDateTime = new Date();
-    expiry = Number(expiry);
-    if (expiry) {
-        const expireAt = cDateTime.setDate(cDateTime.getDate() + expiry);
-        collection.insertOne({ "link": url, value: 0, title, type, expiry, description, imgUrl, author, createDate: cDateTime, expireAt: expireAt });
-    }
-    else {
-        collection.insertOne({ "link": url, value: 0, title, type, expiry, description, imgUrl, author, createDate: cDateTime });
-    }
+const create = (
+	url: string,
+	title: string,
+	description: string,
+	type: string,
+	author: string,
+	expiry: string | number,
+	imgUrl: string
+) => {
+	const cDateTime = new Date();
+	expiry = Number(expiry);
+	if (expiry) {
+		const expireAt = cDateTime.setDate(cDateTime.getDate() + expiry);
+		collection.insertOne({
+			link: url,
+			value: 0,
+			title,
+			type,
+			expiry,
+			description,
+			imgUrl,
+			author,
+			createDate: cDateTime,
+			expireAt: expireAt,
+		});
+	} else {
+		collection.insertOne({
+			link: url,
+			value: 0,
+			title,
+			type,
+			expiry,
+			description,
+			imgUrl,
+			author,
+			createDate: cDateTime,
+		});
+	}
 
-    console.log(`created index for url ${url}!`);
+	console.log(`created index for url ${url}!`);
 };
 
 const fetchFromDb = async (url: string) => {
-    let result: mongoDB.Document;
-    result = await collection.findOne({ "link": url });
-    //backwards compatibility, older version used "_id" field
-    if (!result) result = await collection.findOne({ _id: url });
-    return result;
+	let result: mongoDB.Document;
+	result = await collection.findOne({ link: url });
+	//backwards compatibility, older version used "_id" field
+	if (!result) result = await collection.findOne({ _id: url });
+	return result;
 };
 
 const handleRR = async (req: Request, res: Response) => {
-    let url: string;
-    try {
-        url = decodeURI(req.params.url);
-    } catch (err) {
-        return console.log(err);
-    }
+	let url: string;
+	try {
+		url = decodeURI(req.params.url);
+	} catch (err) {
+		return console.log(err);
+	}
 
-    const result = await fetchFromDb(url);
-    if (!result && !info[url]) return res.render("invalid");
+	const result = await fetchFromDb(url);
+	if (!result && !info[url]) return res.render("invalid");
 
-    let description: string;
-    let type: string;
-    let expiry: string;
-    let ImgUrl: string;
-    let title: string;
-    let author: string;
-    let text: string;
+	let description: string;
+	let type: string;
+	let expiry: string;
+	let ImgUrl: string;
+	let title: string;
+	let author: string;
+	let text: string;
 
-    if (result) {
-        title = result.title;
-        description = result.description;
-        author = result.author;
-        type = result.type;
-        ImgUrl = result.ImgUrl;
-    } else {
-        title = info[url].title;
-        description = info[url].description;
-        type = info[url].type;
-        author = info[url].author;
-        expiry = info[url].expiry;
-        ImgUrl = info[url].ImgUrl;
-        create(url, title, description, type, author, expiry, ImgUrl);
+	if (result) {
+		title = result.title;
+		description = result.description;
+		author = result.author;
+		type = result.type;
+		ImgUrl = result.ImgUrl;
+	} else {
+		title = info[url].title;
+		description = info[url].description;
+		type = info[url].type;
+		author = info[url].author;
+		expiry = info[url].expiry;
+		ImgUrl = info[url].ImgUrl;
+		create(url, title, description, type, author, expiry, ImgUrl);
 
-        delete info[url];
-    }
+		delete info[url];
+	}
 
-    //increment count
-    await collection.updateOne({ _id: "TotalRRCount" }, incValue);
-    await collection.updateOne({ "link": url }, incValue);
+	//increment count if not a bot
+	if (!isbot(req.headers["user-agent"])) {
+		await collection.updateOne({ _id: "TotalRRCount" }, incValue);
+		await collection.updateOne({ link: url }, incValue);
+	}
 
-    if (typeof author !== "undefined" && author.length !== 0) {
-        text = `${author} rickrolled you! haha`;
-    } else {
-        text = "Get rickrolled! haha";
-    }
+	if (typeof author !== "undefined" && author.length !== 0) {
+		text = `${author} rickrolled you! haha`;
+	} else {
+		text = "Get rickrolled! haha";
+	}
 
-    res.render("_rickroll", { title, description, ImgUrl, text });
+	res.render("_rickroll", { title, description, ImgUrl, text });
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateCache = (url: string, params: any) => {
-    info[url] = { title: params.title, description: params.description, value: 0, type: params.type, expiry: params.expiry, ImgUrl: params.ImgUrl, createTime: params.cDateTime, author: params.author };
+	info[url] = {
+		title: params.title,
+		description: params.description,
+		value: 0,
+		type: params.type,
+		expiry: params.expiry,
+		ImgUrl: params.ImgUrl,
+		createTime: params.cDateTime,
+		author: params.author,
+	};
 };
 
 const serve = async () => {
-    await setup().then(() =>
-        app.listen(PORT, () => {
-            console.log(`Listening on port ${PORT}`);
-        })
-    );
+	await setup().then(() =>
+		app.listen(PORT, () => {
+			console.log(`Listening on port ${PORT}`);
+		})
+	);
 };
 
 serve();

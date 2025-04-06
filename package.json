@@ -12,7 +12,8 @@
   "author": "Nihal Navath",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^3.1.6"
+    "ejs": "^3.1.6",
+    "isbot": "^5.1.25"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
